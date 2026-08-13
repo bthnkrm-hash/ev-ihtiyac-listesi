@@ -9,7 +9,13 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 import { ShoppingProvider, useShopping } from "./store/ShoppingStore";
+import AddItemScreen from "./screens/AddItemScreen";
+
+const Tab = createBottomTabNavigator();
 
 const categories = [
   ["🧹", "Temizlik", 42],
@@ -131,21 +137,167 @@ function HomeScreen() {
             ))
           )}
         </View>
-
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addText}>
-            ＋ Alışveriş listesine ürün ekle
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function ShoppingListScreen() {
+  const {
+    items,
+    toggleItem,
+    removeItem,
+  } = useShopping();
+
+  return (
+    <SafeAreaView style={styles.safe}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>
+          Alışveriş Listem 🛒
+        </Text>
+
+        <Text style={styles.subtitle}>
+          Alınacak ürünlerini burada takip et.
+        </Text>
+
+        {items.length === 0 ? (
+          <View style={styles.emptyBox}>
+            <Text style={styles.emptyIcon}>🛒</Text>
+
+            <Text style={styles.emptyTitle}>
+              Listen boş
+            </Text>
+
+            <Text style={styles.emptyText}>
+              Ürün Ekle sekmesinden ürün
+              ekleyebilirsin.
+            </Text>
+          </View>
+        ) : (
+          items.map((item) => (
+            <View
+              style={styles.shoppingRow}
+              key={item.id}
+            >
+              <TouchableOpacity
+                style={[
+                  styles.checkbox,
+                  item.completed &&
+                    styles.checkboxCompleted,
+                ]}
+                onPress={() =>
+                  toggleItem(item.id)
+                }
+              >
+                {item.completed && (
+                  <Text style={styles.check}>
+                    ✓
+                  </Text>
+                )}
+              </TouchableOpacity>
+
+              <View style={styles.shoppingInfo}>
+                <Text
+                  style={[
+                    styles.shoppingName,
+                    item.completed &&
+                      styles.completedText,
+                  ]}
+                >
+                  {item.name}
+                </Text>
+
+                <Text style={styles.shoppingQuantity}>
+                  {item.quantity} {item.unit}
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                onPress={() =>
+                  removeItem(item.id)
+                }
+              >
+                <Text style={styles.delete}>
+                  🗑️
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+function AppTabs() {
+  const { items } = useShopping();
+
+  const activeCount = items.filter(
+    (item) => !item.completed
+  ).length;
+
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#394333",
+        tabBarInactiveTintColor: "#999",
+        tabBarStyle: {
+          height: 70,
+          paddingBottom: 10,
+          paddingTop: 8,
+        },
+      }}
+    >
+      <Tab.Screen
+        name="Ana Sayfa"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 22 }}>
+              🏠
+            </Text>
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Ürün Ekle"
+        component={AddItemScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 22 }}>
+              ➕
+            </Text>
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Liste"
+        component={ShoppingListScreen}
+        options={{
+          tabBarBadge:
+            activeCount > 0
+              ? activeCount
+              : undefined,
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 22 }}>
+              🛒
+            </Text>
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 
 export default function App() {
   return (
     <ShoppingProvider>
-      <HomeScreen />
+      <NavigationContainer>
+        <AppTabs />
+      </NavigationContainer>
     </ShoppingProvider>
   );
 }
@@ -301,6 +453,18 @@ const styles = StyleSheet.create({
     borderColor: "#AAA",
     borderRadius: 7,
     marginRight: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  checkboxCompleted: {
+    backgroundColor: "#394333",
+    borderColor: "#394333",
+  },
+
+  check: {
+    color: "#FFF",
+    fontWeight: "800",
   },
 
   item: {
@@ -320,16 +484,62 @@ const styles = StyleSheet.create({
     color: "#888",
   },
 
-  addButton: {
-    backgroundColor: "#DDE5D5",
+  emptyBox: {
+    backgroundColor: "#FFF",
+    borderRadius: 24,
+    padding: 30,
+    alignItems: "center",
+    marginTop: 20,
+  },
+
+  emptyIcon: {
+    fontSize: 48,
+    marginBottom: 15,
+  },
+
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: "800",
+  },
+
+  emptyText: {
+    color: "#888",
+    textAlign: "center",
+    marginTop: 8,
+  },
+
+  shoppingRow: {
+    backgroundColor: "#FFF",
     borderRadius: 18,
-    height: 56,
-    justifyContent: "center",
+    padding: 16,
+    marginBottom: 10,
+    flexDirection: "row",
     alignItems: "center",
   },
 
-  addText: {
-    color: "#394333",
-    fontWeight: "800",
+  shoppingInfo: {
+    flex: 1,
+  },
+
+  shoppingName: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#222",
+  },
+
+  shoppingQuantity: {
+    color: "#888",
+    fontSize: 12,
+    marginTop: 4,
+  },
+
+  completedText: {
+    textDecorationLine: "line-through",
+    color: "#999",
+  },
+
+  delete: {
+    fontSize: 20,
+    marginLeft: 10,
   },
 });
