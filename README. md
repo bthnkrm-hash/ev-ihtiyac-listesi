@@ -1,0 +1,32 @@
+# Ev İhtiyaç Listesi 🏠
+
+Evde eksilen ürünleri takip etmeyi ve alışveriş listesini yönetmeyi kolaylaştıran mobil uygulama.
+
+## Özellikler
+
+- 🛒 Alışveriş listesi
+- 🏠 Ev stok takibi
+- 🗂️ Kategorilere göre ürünler
+- 🔔 Eksilen ürünleri takip etme
+- 📦 Evde bulunan ürünleri yönetme
+
+## Kategoriler
+
+- Temizlik
+- Mutfak
+- Kağıt ve Hijyen
+- Kişisel Bakım
+- Ev ve Yaşam
+- Evcil Hayvan
+- Bebek
+- Tamir ve Hırdavat
+
+## Teknoloji
+
+- React Native
+- Expo
+- TypeScript
+
+## Proje Durumu
+
+🚧 Geliştirme aşamasında
