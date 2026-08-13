@@ -1,0 +1,298 @@
+import React from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
+
+const categories = [
+  ["🧹", "Temizlik", 42],
+  ["🍳", "Mutfak", 58],
+  ["🧻", "Kağıt & Hijyen", 24],
+  ["🧴", "Kişisel Bakım", 36],
+  ["🏠", "Ev & Yaşam", 31],
+  ["🐶", "Evcil Hayvan", 27],
+  ["👶", "Bebek", 22],
+  ["🔧", "Hırdavat", 35],
+];
+
+const shoppingList = [
+  ["Çamaşır deterjanı", 1],
+  ["Tuvalet kağıdı", 2],
+  ["Bulaşık tableti", 1],
+];
+
+export default function App() {
+  return (
+    <SafeAreaView style={styles.safe}>
+      <StatusBar style="dark" />
+
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.small}>EVİM</Text>
+            <Text style={styles.title}>Merhaba 👋</Text>
+            <Text style={styles.subtitle}>
+              Bugün evde ne eksik?
+            </Text>
+          </View>
+
+          <View style={styles.homeIcon}>
+            <Text style={{ fontSize: 24 }}>🏠</Text>
+          </View>
+        </View>
+
+        <View style={styles.summary}>
+          <View>
+            <Text style={styles.summaryLabel}>
+              Alışveriş listem
+            </Text>
+
+            <Text style={styles.number}>7</Text>
+
+            <Text style={styles.summaryText}>
+              ürün alınmayı bekliyor
+            </Text>
+          </View>
+
+          <Text style={styles.cart}>🛒</Text>
+        </View>
+
+        <Text style={styles.sectionTitle}>Kategoriler</Text>
+
+        <View style={styles.grid}>
+          {categories.map(([icon, name, count]) => (
+            <TouchableOpacity
+              key={name}
+              style={styles.category}
+            >
+              <Text style={styles.categoryIcon}>{icon}</Text>
+
+              <Text style={styles.categoryName}>
+                {name}
+              </Text>
+
+              <Text style={styles.count}>
+                {count} ürün
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <View style={styles.listHeader}>
+          <Text style={styles.sectionTitle}>
+            Alışveriş listem
+          </Text>
+
+          <Text style={styles.seeAll}>
+            Tümünü gör
+          </Text>
+        </View>
+
+        <View style={styles.list}>
+          {shoppingList.map(([name, quantity]) => (
+            <View style={styles.row} key={name}>
+              <View style={styles.checkbox} />
+
+              <Text style={styles.item}>
+                {name}
+              </Text>
+
+              <Text style={styles.quantity}>
+                x{quantity}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        <TouchableOpacity style={styles.addButton}>
+          <Text style={styles.addText}>
+            ＋ Alışveriş listesine ürün ekle
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: "#F7F7F5",
+  },
+
+  container: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 24,
+  },
+
+  small: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 2,
+    color: "#777",
+  },
+
+  title: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#20201D",
+    marginTop: 4,
+  },
+
+  subtitle: {
+    color: "#777",
+    marginTop: 4,
+  },
+
+  homeIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: "#FFF",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  summary: {
+    backgroundColor: "#20201D",
+    borderRadius: 24,
+    padding: 22,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 28,
+  },
+
+  summaryLabel: {
+    color: "#CCC",
+    fontSize: 14,
+  },
+
+  number: {
+    color: "#FFF",
+    fontSize: 44,
+    fontWeight: "800",
+    marginTop: 4,
+  },
+
+  summaryText: {
+    color: "#AAA",
+    fontSize: 13,
+  },
+
+  cart: {
+    fontSize: 42,
+    backgroundColor: "#FFF",
+    padding: 12,
+    borderRadius: 40,
+  },
+
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#20201D",
+    marginBottom: 14,
+  },
+
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginBottom: 28,
+  },
+
+  category: {
+    width: "48%",
+    backgroundColor: "#FFF",
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 12,
+  },
+
+  categoryIcon: {
+    fontSize: 28,
+    marginBottom: 10,
+  },
+
+  categoryName: {
+    fontWeight: "800",
+    color: "#252521",
+  },
+
+  count: {
+    fontSize: 11,
+    color: "#888",
+    marginTop: 5,
+  },
+
+  listHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  seeAll: {
+    color: "#5D6B52",
+    fontWeight: "700",
+    marginTop: 4,
+  },
+
+  list: {
+    backgroundColor: "#FFF",
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+
+  row: {
+    height: 58,
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#EEE",
+  },
+
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderWidth: 2,
+    borderColor: "#AAA",
+    borderRadius: 7,
+    marginRight: 12,
+  },
+
+  item: {
+    flex: 1,
+    fontWeight: "600",
+    color: "#333",
+  },
+
+  quantity: {
+    color: "#888",
+    fontWeight: "700",
+  },
+
+  addButton: {
+    backgroundColor: "#DDE5D5",
+    borderRadius: 18,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  addText: {
+    color: "#394333",
+    fontWeight: "800",
+  },
+});
