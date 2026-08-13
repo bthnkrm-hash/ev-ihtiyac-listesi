@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
+import { ShoppingProvider, useShopping } from "./store/ShoppingStore";
+
 const categories = [
   ["🧹", "Temizlik", 42],
   ["🍳", "Mutfak", 58],
@@ -20,13 +22,13 @@ const categories = [
   ["🔧", "Hırdavat", 35],
 ];
 
-const shoppingList = [
-  ["Çamaşır deterjanı", 1],
-  ["Tuvalet kağıdı", 2],
-  ["Bulaşık tableti", 1],
-];
+function HomeScreen() {
+  const { items } = useShopping();
 
-export default function App() {
+  const activeItems = items.filter(
+    (item) => !item.completed
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
@@ -35,7 +37,11 @@ export default function App() {
         <View style={styles.header}>
           <View>
             <Text style={styles.small}>EVİM</Text>
-            <Text style={styles.title}>Merhaba 👋</Text>
+
+            <Text style={styles.title}>
+              Merhaba 👋
+            </Text>
+
             <Text style={styles.subtitle}>
               Bugün evde ne eksik?
             </Text>
@@ -52,7 +58,9 @@ export default function App() {
               Alışveriş listem
             </Text>
 
-            <Text style={styles.number}>7</Text>
+            <Text style={styles.number}>
+              {activeItems.length}
+            </Text>
 
             <Text style={styles.summaryText}>
               ürün alınmayı bekliyor
@@ -62,25 +70,31 @@ export default function App() {
           <Text style={styles.cart}>🛒</Text>
         </View>
 
-        <Text style={styles.sectionTitle}>Kategoriler</Text>
+        <Text style={styles.sectionTitle}>
+          Kategoriler
+        </Text>
 
         <View style={styles.grid}>
-          {categories.map(([icon, name, count]) => (
-            <TouchableOpacity
-              key={name}
-              style={styles.category}
-            >
-              <Text style={styles.categoryIcon}>{icon}</Text>
+          {categories.map(
+            ([icon, name, count]) => (
+              <TouchableOpacity
+                key={name}
+                style={styles.category}
+              >
+                <Text style={styles.categoryIcon}>
+                  {icon}
+                </Text>
 
-              <Text style={styles.categoryName}>
-                {name}
-              </Text>
+                <Text style={styles.categoryName}>
+                  {name}
+                </Text>
 
-              <Text style={styles.count}>
-                {count} ürün
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text style={styles.count}>
+                  {count} ürün
+                </Text>
+              </TouchableOpacity>
+            )
+          )}
         </View>
 
         <View style={styles.listHeader}>
@@ -89,24 +103,33 @@ export default function App() {
           </Text>
 
           <Text style={styles.seeAll}>
-            Tümünü gör
+            {activeItems.length} ürün
           </Text>
         </View>
 
         <View style={styles.list}>
-          {shoppingList.map(([name, quantity]) => (
-            <View style={styles.row} key={name}>
-              <View style={styles.checkbox} />
+          {activeItems.length === 0 ? (
+            <Text style={styles.empty}>
+              Listen şimdilik boş 🎉
+            </Text>
+          ) : (
+            activeItems.map((item) => (
+              <View
+                style={styles.row}
+                key={item.id}
+              >
+                <View style={styles.checkbox} />
 
-              <Text style={styles.item}>
-                {name}
-              </Text>
+                <Text style={styles.item}>
+                  {item.name}
+                </Text>
 
-              <Text style={styles.quantity}>
-                x{quantity}
-              </Text>
-            </View>
-          ))}
+                <Text style={styles.quantity}>
+                  x{item.quantity}
+                </Text>
+              </View>
+            ))
+          )}
         </View>
 
         <TouchableOpacity style={styles.addButton}>
@@ -116,6 +139,14 @@ export default function App() {
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+export default function App() {
+  return (
+    <ShoppingProvider>
+      <HomeScreen />
+    </ShoppingProvider>
   );
 }
 
@@ -281,6 +312,12 @@ const styles = StyleSheet.create({
   quantity: {
     color: "#888",
     fontWeight: "700",
+  },
+
+  empty: {
+    padding: 20,
+    textAlign: "center",
+    color: "#888",
   },
 
   addButton: {
