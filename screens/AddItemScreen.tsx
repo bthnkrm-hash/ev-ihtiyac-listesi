@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
   FlatList,
   SafeAreaView,
   StyleSheet,
@@ -9,20 +8,31 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
 import { products } from "../data/products";
+import { useShopping } from "../store/ShoppingStore";
 
 export default function AddItemScreen() {
   const [search, setSearch] = useState("");
 
+  const { addItem } = useShopping();
+
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase())
+    product.name
+      .toLocaleLowerCase("tr-TR")
+      .includes(search.toLocaleLowerCase("tr-TR"))
   );
 
-  const addProduct = (name: string) => {
-    Alert.alert(
-      "Ürün eklendi 🛒",
-      `${name} alışveriş listesine eklendi.`
-    );
+  const addProduct = (
+    product: (typeof products)[number]
+  ) => {
+    addItem({
+      id: `${product.id}-${Date.now()}`,
+      productId: product.id,
+      name: product.name,
+      quantity: 1,
+      unit: product.unit,
+    });
   };
 
   return (
@@ -47,9 +57,9 @@ export default function AddItemScreen() {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.product}
-            onPress={() => addProduct(item.name)}
+            onPress={() => addProduct(item)}
           >
-            <View>
+            <View style={styles.productInfo}>
               <Text style={styles.productName}>
                 {item.name}
               </Text>
@@ -116,6 +126,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+
+  productInfo: {
+    flex: 1,
   },
 
   productName: {
