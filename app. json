@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "Ev İhtiyaç Listesi",
+    "slug": "ev-ihtiyac-listesi",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "android": {
+      "package": "com.bthnkrm.evihitiyaclistesi"
+    },
+    "ios": {
+      "bundleIdentifier": "com.bthnkrm.evihitiyaclistesi"
+    }
+  }
+}
